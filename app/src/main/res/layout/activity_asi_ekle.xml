@@ -8,16 +8,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
         android:layout_height="fill_parent"
+        android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Aşı Kayıt Ekranı"
-            android:textSize="10pt">
-        </TextView>
+            android:textAppearance="@color/colorPrimaryDark"
+            android:textSize="10pt"></TextView>
 
         <EditText
             android:id="@+id/EditTextAsiName"
@@ -33,25 +33,43 @@
 
             android:hint="Hastahane Adı"></EditText>
 
-        <!--<EditText
-            android:id="@+id/EditTextAsiTarihi"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Aşı Tarihi"
-            android:inputType="datetime"
-            android:layout_width="fill_parent">
-        </EditText>-->
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:text="Tarih:"
+                android:textSize="18sp"></TextView>
+
+            <TextView
+                android:id="@+id/TextViewAsiTarihi"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18sp">
+
+            </TextView>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonTarih"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Tarihi Seçiniz"></Button>
+
+
         <Button
             android:id="@+id/ButtonAsiKaydet"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Aşı Kaydet"
-            android:layout_width="fill_parent"
-            tools:ignore="OnClick">
-        </Button>
+            tools:ignore="OnClick"></Button>
 
-        <CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

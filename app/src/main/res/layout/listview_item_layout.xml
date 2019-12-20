@@ -12,11 +12,11 @@
     android:paddingTop="16dp">
 
     <TextView
-        android:id="@+id/asiId"
+        android:id="@+id/asiName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:textColor="@color/title"
+        android:textColor="#000"
         android:textSize="16dp"
         android:textStyle="bold" />
 
@@ -24,13 +24,13 @@
         android:id="@+id/hastaneAdi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/asiId" />
+        android:layout_below="@id/asiName" />
 
     <TextView
         android:id="@+id/asiTarih"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:textColor="@color/year" />
+        android:textColor="#000" />
 
 </RelativeLayout>

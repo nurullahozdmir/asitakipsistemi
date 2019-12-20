@@ -21,7 +21,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         // you provide access to all the views for a data item in a view holder
         public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             // each data item is just a string in this case
-            public TextView asiId,hastaneAdı,asiTarih;
+            public TextView  asiName,hastaneAdı,asiTarih;
 
             OnNoteListener onNoteListener;
 
@@ -30,7 +30,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
                 this.onNoteListener = onNoteListener;
 
-                asiId = v.findViewById(R.id.asiId);
+                 asiName = v.findViewById(R.id.asiName);
                 hastaneAdı = v.findViewById(R.id.hastaneAdi);
                 asiTarih = v.findViewById(R.id.asiTarih);
 
@@ -60,7 +60,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Asi asi = asiList.get(position);
-        holder.asiId.setText(asi.getAsiAdi());
+        holder. asiName.setText(asi.getAsiAdi());
         holder.hastaneAdı.setText(asi.getHastahaneAdi());
         holder.asiTarih.setText(asi.getAsiTarih());
     }

@@ -1,12 +1,15 @@
 package com.example.asitakipson;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class AsiEkle extends AppCompatActivity {
 
@@ -27,10 +32,13 @@ public class AsiEkle extends AppCompatActivity {
     DatabaseReference db;
     EditText editTextAsiAdı;
     EditText editTextHastahaneAdi;
+    TextView textViewtarih;
     // EditText editTextAsiTarihi;
     CalendarView editTextAsiTarihi;
     final Context context = this;
-    Button button;
+    Button button,buttonTarih;
+    Calendar calendar;
+    DatePickerDialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +48,38 @@ public class AsiEkle extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         final String uID = extras.getString("sendUD");
         //  Toast.makeText(this, uID, Toast.LENGTH_SHORT).show();
-        System.out.println("başlangıç:" + uID);
+       // System.out.println("başlangıç:" + uID);
 
         editTextAsiAdı = findViewById(R.id.EditTextAsiName);
         editTextHastahaneAdi = findViewById(R.id.EditTextHastahane);
-        editTextAsiTarihi = findViewById(R.id.calendarView);
-        // editTextAsiTarihi=findViewById(R.id.EditTextAsiTarihi);
+        textViewtarih = findViewById(R.id.TextViewAsiTarihi);
+
+   //     editTextAsiTarihi = findViewById(R.id.calendarView);
 
         button = findViewById(R.id.ButtonAsiKaydet);
+        buttonTarih = findViewById(R.id.buttonTarih);
+
+        buttonTarih.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                datePickerDialog = new DatePickerDialog(AsiEkle.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        textViewtarih.setText(dayOfMonth + "/" + (month+1) + "/" + year);
+                    }
+                }, day,month,year);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
+            }
+        });
+
+
+
 
         if (uID != null) {
             db = FirebaseDatabase.getInstance().getReference(uID).child("Asilar");
@@ -71,20 +103,16 @@ public class AsiEkle extends AppCompatActivity {
     private void btnAsiKaydet() {
 
         if (!editTextAsiAdı.getText().toString().isEmpty() && !editTextHastahaneAdi.getText().toString().isEmpty() ) {
+            String ad = editTextAsiAdı.getText().toString().trim();
+            String hastane = editTextHastahaneAdi.getText().toString().trim();
 
-            Asi asi = new Asi();
+            String tarih = textViewtarih.getText().toString();
 
             String id = db.push().getKey();
-            System.out.println("başlangıç:" + id);
 
-            asi.setAsiId(id);
+            Asi asi = new Asi(id, ad, hastane,tarih);
 
-            asi.setAsiAdi(editTextAsiAdı.getText().toString());
-            asi.setHastahaneAdi(editTextHastahaneAdi.getText().toString());
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            asi.setAsiTarih(sdf.format(new Date(editTextAsiTarihi.getDate())));
-            db.push().setValue(asi).addOnSuccessListener(new OnSuccessListener<Void>() {
+            db.child(id).setValue(asi).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -103,12 +131,15 @@ public class AsiEkle extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int id) {
 
                                     dialog.cancel();
+                                    editTextAsiAdı.setText("");
+                                    editTextHastahaneAdi.setText("");
                                 }
                             });
 
                     AlertDialog alert = alertDialog.create();
-
                     alert.show();
+
+
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
@@ -122,6 +153,7 @@ public class AsiEkle extends AppCompatActivity {
         } else {
             Toast.makeText(getApplicationContext(), "Lütfen alanları doldurunuz.", Toast.LENGTH_SHORT).show();
         }
+
 
     }
 }

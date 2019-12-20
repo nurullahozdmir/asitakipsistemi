@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
 
-        android:hint="Aşı ID"></EditText>
+        android:hint="Aşı Adı"></EditText>
 
     <EditText
         android:id="@+id/EditTextHastahaneD"
@@ -17,10 +17,36 @@
         android:layout_height="wrap_content"
 
         android:hint="Hastahane Adı"></EditText>
-    <CalendarView
-        android:id="@+id/calendarViewD"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_weight="1"
+            android:text="Tarih:"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/textViewTarihUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Tarihi Seçiniz"
+        android:id="@+id/buttonTarihUpdate"></Button>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
