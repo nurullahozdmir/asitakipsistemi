@@ -1,10 +1,18 @@
-package com.example.asitakipson;
+package com.example.asitakipson.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
@@ -12,52 +20,45 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.asitakipson.Asi;
+import com.example.asitakipson.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
-public class AsiEkle extends AppCompatActivity {
-
+public class AsiAdd extends Fragment {
 
     DatabaseReference db;
     EditText editTextAsiAdı;
     EditText editTextHastahaneAdi;
     TextView textViewtarih;
-    // EditText editTextAsiTarihi;
-    CalendarView editTextAsiTarihi;
-    final Context context = this;
-    Button button,buttonTarih;
+
+    Button button, buttonTarih;
     Calendar calendar;
     DatePickerDialog datePickerDialog;
 
+    String uID;
+    FirebaseAuth mAuth;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_asi_ekle);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_asi_add, container, false);
 
-        Bundle extras = getIntent().getExtras();
-        final String uID = extras.getString("sendUD");
-        //  Toast.makeText(this, uID, Toast.LENGTH_SHORT).show();
-       // System.out.println("başlangıç:" + uID);
+        mAuth = FirebaseAuth.getInstance();
+        uID = mAuth.getUid();
 
-        editTextAsiAdı = findViewById(R.id.EditTextAsiName);
-        editTextHastahaneAdi = findViewById(R.id.EditTextHastahane);
-        textViewtarih = findViewById(R.id.TextViewAsiTarihi);
+        editTextAsiAdı = view.findViewById(R.id.EditTextAsiName);
+        editTextHastahaneAdi = view.findViewById(R.id.EditTextHastahane);
+        textViewtarih = view.findViewById(R.id.TextViewAsiTarihi);
 
-   //     editTextAsiTarihi = findViewById(R.id.calendarView);
-
-        button = findViewById(R.id.ButtonAsiKaydet);
-        buttonTarih = findViewById(R.id.buttonTarih);
+        button = view.findViewById(R.id.ButtonAsiKaydet);
+        buttonTarih = view.findViewById(R.id.buttonTarih);
 
         buttonTarih.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,25 +68,22 @@ public class AsiEkle extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
 
-                datePickerDialog = new DatePickerDialog(AsiEkle.this, new DatePickerDialog.OnDateSetListener() {
+                datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        textViewtarih.setText(dayOfMonth + "/" + (month+1) + "/" + year);
+                        textViewtarih.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                     }
-                }, day,month,year);
+                }, day, month, year);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
 
 
-
-
         if (uID != null) {
             db = FirebaseDatabase.getInstance().getReference(uID).child("Asilar");
 
         } else {
-              Toast.makeText(this, "UID Boş Olamaz", Toast.LENGTH_SHORT).show();
             System.out.println("uıd boş olamaz");
         }
 
@@ -97,7 +95,7 @@ public class AsiEkle extends AppCompatActivity {
                 btnAsiKaydet();
             }
         });
-
+        return view;
     }
 
     private void btnAsiKaydet() {
@@ -109,32 +107,26 @@ public class AsiEkle extends AppCompatActivity {
             String tarih = textViewtarih.getText().toString();
 
             String id = db.push().getKey();
-
-            Asi asi = new Asi(id, ad, hastane,tarih);
+            String asiDurumu = "0";
+            Asi asi = new Asi(id, ad, hastane,tarih,asiDurumu);
 
             db.child(id).setValue(asi).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                    final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
                     alertDialog.setTitle("Aşı Eklendi");
 
                     alertDialog
-                            .setMessage("Geri dönmek istiyor musunuz?")
+                            .setMessage("Aşı ekleme başarılı.")
                             .setCancelable(false)
-                            .setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                            .setPositiveButton("Tamam", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-
-                                    AsiEkle.this.finish();
-                                }
-                            })
-                            .setNegativeButton("Hayır", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-
-                                    dialog.cancel();
                                     editTextAsiAdı.setText("");
                                     editTextHastahaneAdi.setText("");
+                                    dialog.cancel();
                                 }
                             });
+
 
                     AlertDialog alert = alertDialog.create();
                     alert.show();
@@ -145,17 +137,15 @@ public class AsiEkle extends AppCompatActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "HATA! Aşı ekleme başarısız", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "HATA! Aşı ekleme başarısız", Toast.LENGTH_SHORT).show();
                         }
                     });
 
 
         } else {
-            Toast.makeText(getApplicationContext(), "Lütfen alanları doldurunuz.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Lütfen alanları doldurunuz.", Toast.LENGTH_SHORT).show();
         }
-
-
     }
+
+
 }
-
-

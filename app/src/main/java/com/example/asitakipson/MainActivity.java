@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         if(mAuth.getCurrentUser()!=null){
             finish();
-            startActivity(new Intent(this,ProfilActivity.class));
+            startActivity(new Intent(this,tab.class));
         }
     }
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                     finish();
 
-                    Intent intent = new Intent(MainActivity.this,ProfilActivity.class);
+                    Intent intent = new Intent(MainActivity.this,tab.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
 

@@ -1,6 +1,8 @@
 package com.example.asitakipson;
 
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
         private List<Asi> asiList;
         private String[] mDataset;
 
         private OnNoteListener mOnNoteListener;
-        // Provide a reference to the views for each data item
-        // Complex data items may need more than one view per item, and
-        // you provide access to all the views for a data item in a view holder
+
         public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            // each data item is just a string in this case
-            public TextView  asiName,hastaneAdı,asiTarih;
+            public  TextView  asiName,hastaneAdı,asiTarih,asiDurumu;
+
 
             OnNoteListener onNoteListener;
 
@@ -33,6 +34,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                  asiName = v.findViewById(R.id.asiName);
                 hastaneAdı = v.findViewById(R.id.hastaneAdi);
                 asiTarih = v.findViewById(R.id.asiTarih);
+                asiDurumu = v.findViewById(R.id.durum);
 
                 v.setOnClickListener(this);
             }
@@ -60,9 +62,20 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Asi asi = asiList.get(position);
-        holder. asiName.setText(asi.getAsiAdi());
-        holder.hastaneAdı.setText(asi.getHastahaneAdi());
-        holder.asiTarih.setText(asi.getAsiTarih());
+        holder. asiName.setText("Aşı adı:"+asi.getAsiAdi());
+        holder.hastaneAdı.setText("Hastane:"+asi.getHastahaneAdi());
+        holder.asiTarih.setText("Tarih:"+asi.getAsiTarih());
+        holder.asiDurumu.setText(asi.getAsiDurumu());
+
+
+        if (asi.getAsiDurumu().equals("1")){
+            holder.asiDurumu.setText("Aşı Yapıldı");
+            holder.asiDurumu.setTextColor(Color.parseColor("#008000"));
+        }
+        else{
+            holder.asiDurumu.setText("Aşı Yapılmadı");
+            holder.asiDurumu.setTextColor(Color.parseColor("#FF0000"));
+        }
     }
 
     @Override
